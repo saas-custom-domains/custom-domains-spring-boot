@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>Billport dashboard</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<main>
+  <h1>Billport dashboard</h1>
+  <p class="muted">Connect a custom domain to each supplier's client portal.</p>
+
+  <section th:each="supplier : ${suppliers}" th:data-testid="|supplier-${supplier.slug}|">
+    <h2 th:text="${supplier.name}">Acme Supplies</h2>
+    <ul>
+      <li th:each="domain : ${domains.getOrDefault(supplier.id, {})}" th:data-testid="|domain-${domain.host}|">
+        <span class="host" th:text="${domain.host}">billing.acme.com</span>
+        <span class="badge" th:classappend="${domain.status.name() == 'ACTIVE'} ? 'active'"
+              th:text="${domain.statusLabel()}">Live</span>
+        <form method="post" th:action="@{/domains/{id}/check(id=${domain.id})}">
+          <button class="link">Check DNS</button>
+        </form>
+        <form method="post" th:action="@{/domains/{id}/remove(id=${domain.id})}">
+          <button class="link danger">Remove</button>
+        </form>
+      </li>
+    </ul>
+    <!-- th:action adds Spring Security's CSRF token as a hidden field. -->
+    <form class="row" method="post" th:action="@{/suppliers/{id}/domains(id=${supplier.id})}">
+      <input name="host" required placeholder="billing.example.com" aria-label="Domain">
+      <input name="dnsContact" type="email" placeholder="DNS contact (optional)"
+             aria-label="DNS contact email (optional)">
+      <button class="primary">Add domain</button>
+    </form>
+    <p role="alert" class="danger" th:if="${errorFor == supplier.id}" th:text="${error}"></p>
+  </section>
+</main>
+</body>
+</html>

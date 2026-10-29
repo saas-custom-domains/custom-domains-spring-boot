@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title th:text="|${supplier.name} client portal|">Client portal</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<main>
+  <h1 th:text="${supplier.name}">Acme Supplies</h1>
+  <p class="muted" th:text="${supplier.tagline}"></p>
+
+  <p role="status" class="ok" th:if="${message}" th:text="${message}"></p>
+  <p role="alert" class="danger" th:if="${error}" th:text="${error}"></p>
+
+  <table>
+    <thead><tr><th>Invoice</th><th>Issued</th><th>Status</th><th class="amount">Amount</th></tr></thead>
+    <tbody>
+      <tr th:each="invoice : ${invoices}">
+        <td th:text="${invoice.number}"></td>
+        <td th:text="${#temporals.format(invoice.issuedOn, 'd MMM yyyy')}"></td>
+        <td th:text="${invoice.status}"></td>
+        <td class="amount" th:text="|EUR ${#numbers.formatDecimal(invoice.amount, 1, 'COMMA', 2, 'POINT')}|"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section>
+    <h2>Request a copy of an invoice</h2>
+    <form class="row" method="post" th:action="@{/copy-requests}">
+      <select name="invoiceNumber" aria-label="Invoice" required>
+        <option th:each="invoice : ${invoices}" th:value="${invoice.number}" th:text="${invoice.number}"></option>
+      </select>
+      <input name="email" type="email" required placeholder="you@example.com" aria-label="Email">
+      <button class="primary">Request a copy</button>
+    </form>
+  </section>
+
+  <p class="small">Portal address: <span data-testid="portal-url" th:text="${portalUrl}"></span></p>
+</main>
+</body>
+</html>
