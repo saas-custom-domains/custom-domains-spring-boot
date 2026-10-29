@@ -11,7 +11,10 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 	// unique index on custom_domain.host (see schema.sql).
 	@Query("""
 			select d.supplier from CustomDomain d
-			where d.host = :host and d.status = com.example.billport.CustomDomain.Status.ACTIVE""")
+			where d.host = :host
+			  and d.status =
+			    com.example.billport.CustomDomain.Status.ACTIVE
+			""")
 	Optional<Supplier> findByActiveHost(String host);
 
 }

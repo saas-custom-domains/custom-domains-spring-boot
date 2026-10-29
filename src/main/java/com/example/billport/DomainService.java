@@ -34,7 +34,8 @@ public class DomainService {
 			throw new DomainTakenException(host);
 		}
 		try {
-			domain.setProviderUuid(api.createDomain(host, dnsContact).uuid());
+			var created = api.createDomain(host, dnsContact);
+			domain.setProviderUuid(created.uuid());
 			return domains.save(domain);
 		}
 		catch (RuntimeException e) {
