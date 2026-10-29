@@ -6,9 +6,17 @@ updates:
   - package-ecosystem: npm
     directory: /e2e
     schedule: { interval: weekly }
+    ignore:
+      # Match the Node.js LTS line CI runs on; move majors by hand.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly }
   - package-ecosystem: docker
     directory: /
     schedule: { interval: weekly }
+    ignore:
+      # Stay on the Java LTS line (25); move majors by hand.
+      - dependency-name: "eclipse-temurin"
+        update-types: ["version-update:semver-major"]
